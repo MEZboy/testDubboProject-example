@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://code.alibabatech.com/schema/dubbo
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+    ">
+
+	<description>Dubbo Provider Demo Service</description>
+	
+	<!-- 服务应用名称：提供方应用信息，用于计算依赖关系 -->
+    <dubbo:application name="dubbo-demo-provider">
+        <dubbo:parameter key="qos.enable" value="true"/>
+        <dubbo:parameter key="qos.accept.foreign.ip" value="false"/>
+        <dubbo:parameter key="qos.port" value="33333"/>
+    </dubbo:application>
+	
+    <!-- multicast注册中心 -->
+    <!-- <dubbo:registry address="multicast://224.5.6.7:1234"/> -->
+
+	<!-- 使用zookeeper注册中心暴露服务地址 -->
+	<dubbo:registry protocol="zookeeper" address="192.168.1.233:2181" />
+
+	<!-- dubbo缓存  -->
+	<dubbo:protocol id="dubbo" name="dubbo" port="20880" threadpool="cached" threads="100"  />
+	
+	<!-- 缺省配置 -->
+    <dubbo:provider timeout="30000" threadpool="fixed" threads="100" accepts="1000" id="payload" payload="11557050"/>
+
+	<!-- Greeting服务 -->
+	<bean id="greetingService" class="com.example.dubbo.service.GreetingServiceImpl" />
+
+	<dubbo:service protocol="dubbo" interface="com.example.dubbo.GreetingService" ref="greetingService" />
+</beans>
